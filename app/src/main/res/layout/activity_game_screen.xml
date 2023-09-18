@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_game_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <TextView
+        android:id="@+id/usernameGameplay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/anonymous"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.052"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/score_0"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.553"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.897"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/heart"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/starting_lives_view"
+        android:layout_width="12dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/_0"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.959"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/road1"
+        android:layout_width="179dp"
+        android:layout_height="270dp"
+        android:layout_marginTop="364dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.025"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/road"
+        android:contentDescription="@string/layout" />
+
+    <ImageView
+        android:id="@+id/road2"
+        android:layout_width="179dp"
+        android:layout_height="270dp"
+        android:layout_marginTop="364dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/road"
+        android:contentDescription="@string/layout" />
+
+    <ImageView
+        android:id="@+id/road3"
+        android:layout_width="179dp"
+        android:layout_height="270dp"
+        android:layout_marginTop="364dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.969"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/road" />
+
+    <ImageView
+        android:id="@+id/start_area"
+        android:layout_width="548dp"
+        android:layout_height="206dp"
+        android:layout_marginTop="624dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/safe_area" />
+
+    <ImageView
+        android:id="@+id/safe_area"
+        android:layout_width="120dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="320dp"
+        android:layout_marginEnd="308dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/safe_area" />
+
+    <ImageView
+        android:id="@+id/safe_area2"
+        android:layout_width="493dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="316dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/safe_area" />
+
+    <ImageView
+        android:id="@+id/safe_area3"
+        android:layout_width="120dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="328dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintBottom_toTopOf="@+id/road3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/safe_area2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.444"
+        app:srcCompat="@drawable/safe_area" />
+
+    <ImageView
+        android:id="@+id/safe_area4"
+        android:layout_width="120dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="320dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.73"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/safe_area" />
+
+    <ImageView
+        android:id="@+id/safe_area5"
+        android:layout_width="120dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="248dp"
+        android:layout_marginTop="316dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/safe_area" />
+
+    <ImageView
+        android:id="@+id/water"
+        android:layout_width="310dp"
+        android:layout_height="208dp"
+        android:layout_marginTop="120dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/water" />
+
+    <ImageView
+        android:id="@+id/water2"
+        android:layout_width="310dp"
+        android:layout_height="208dp"
+        android:layout_marginTop="120dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/water" />
+
+    <ImageView
+        android:id="@+id/goal"
+        android:layout_width="100dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="328dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/goal" />
+
+    <ImageView
+        android:id="@+id/goal2"
+        android:layout_width="200dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="260dp"
+        android:layout_marginTop="72dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/goal" />
+
+    <ImageView
+        android:id="@+id/goal3"
+        android:layout_width="100dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="4dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.757"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/goal" />
+
+    <ImageView
+        android:id="@+id/goal4"
+        android:layout_width="200dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="4dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.459"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/goal" />
+
+    <ImageView
+        android:id="@+id/goal5"
+        android:layout_width="100dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="72dp"
+        android:contentDescription="@string/layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/goal" />
+
+
+    <ImageButton
+        android:id="@+id/leftButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="250dp"
+        android:layout_marginTop="688dp"
+        android:onClick="onLeftTouch"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/leftbutton"
+        tools:ignore="ContentDescription"/>
+
+    <ImageButton
+        android:id="@+id/upButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="305dp"
+        android:layout_marginTop="640dp"
+        android:onClick="onUpTouch"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/upbutton"
+        tools:ignore="ContentDescription"/>
+
+    <ImageButton
+        android:id="@+id/downButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="305dp"
+        android:layout_marginTop="688dp"
+        android:onClick="onDownTouch"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/downbutton"
+        tools:ignore="ContentDescription"/>
+
+    <ImageButton
+        android:id="@+id/rightButton"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="360dp"
+        android:layout_marginTop="688dp"
+        android:onClick="onRightTouch"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/rightbutton"
+        tools:ignore="ContentDescription"/>
+
+    <ImageView
+        android:id="@+id/lane2bus"
+        android:layout_width="119dp"
+        android:layout_height="48dp"
+        app:srcCompat="@drawable/bus"
+        tools:layout_editor_absoluteX="66dp"
+        tools:layout_editor_absoluteY="536dp" />
+
+    <ImageView
+        android:id="@+id/lane2constructiontruck"
+        android:layout_width="107dp"
+        android:layout_height="50dp"
+        app:srcCompat="@drawable/constructiontruck"
+        tools:layout_editor_absoluteX="211dp"
+        tools:layout_editor_absoluteY="528dp" />
+
+    <ImageView
+        android:id="@+id/lane1cara"
+        android:rotationY="180"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        app:srcCompat="@drawable/cara"
+        tools:layout_editor_absoluteX="91dp"
+        tools:layout_editor_absoluteY="587dp" />
+
+    <ImageView
+        android:id="@+id/lane1card"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:rotationY="180"
+        app:srcCompat="@drawable/card"
+        tools:layout_editor_absoluteX="325dp"
+        tools:layout_editor_absoluteY="584dp" />
+
+    <ImageView
+        android:id="@+id/lane3carf"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:rotationY="180"
+        app:srcCompat="@drawable/carf"
+        tools:layout_editor_absoluteX="318dp"
+        tools:layout_editor_absoluteY="487dp" />
+
+    <ImageView
+        android:id="@+id/lane3trashtruck"
+        android:layout_width="88dp"
+        android:layout_height="50dp"
+        android:rotationY="180"
+        app:srcCompat="@drawable/trashtruck"
+        tools:layout_editor_absoluteX="105dp"
+        tools:layout_editor_absoluteY="475dp" />
+
+    <ImageView
+        android:id="@+id/lane4govtcar"
+        android:layout_width="73dp"
+        android:layout_height="50dp"
+        app:srcCompat="@drawable/govtcar"
+        tools:layout_editor_absoluteX="315dp"
+        tools:layout_editor_absoluteY="425dp" />
+
+    <ImageView
+        android:id="@+id/lane5card"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:rotationY="180"
+        app:srcCompat="@drawable/card"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="374dp" />
+
+    <ImageView
+        android:id="@+id/lane2pickuptruckb"
+        android:layout_width="74dp"
+        android:layout_height="45dp"
+        app:srcCompat="@drawable/pickuptruckb"
+        tools:layout_editor_absoluteX="305dp"
+        tools:layout_editor_absoluteY="536dp" />
+
+    <ImageView
+        android:id="@+id/lane5police1"
+        android:layout_width="68dp"
+        android:layout_height="40dp"
+        android:rotationY="180"
+        app:srcCompat="@drawable/policecar"
+        tools:layout_editor_absoluteX="250dp"
+        tools:layout_editor_absoluteY="374dp" />
+
+    <ImageView
+        android:id="@+id/lane5police2"
+        android:layout_width="68dp"
+        android:layout_height="40dp"
+        android:rotationY="180"
+        app:srcCompat="@drawable/policecar"
+        tools:layout_editor_absoluteX="300dp"
+        tools:layout_editor_absoluteY="374dp" />
+
+    <ImageView
+        android:id="@+id/lane4pickuptrucka"
+        android:layout_width="63dp"
+        android:layout_height="51dp"
+        app:srcCompat="@drawable/pickuptrucka"
+        tools:layout_editor_absoluteX="247dp"
+        tools:layout_editor_absoluteY="424dp" />
+
+    <ImageView
+        android:id="@+id/riverlane1logA"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/log"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="268dp" />
+
+    <ImageView
+        android:id="@+id/riverlane1logB"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/log"
+        tools:layout_editor_absoluteX="200dp"
+        tools:layout_editor_absoluteY="268dp" />
+
+    <ImageView
+        android:id="@+id/riverlane2logA"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/log"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="218dp" />
+
+    <ImageView
+        android:id="@+id/riverlane2logB"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/log"
+        tools:layout_editor_absoluteX="150dp"
+        tools:layout_editor_absoluteY="218dp" />
+
+    <ImageView
+        android:id="@+id/riverlane3logA"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/log"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="166dp" />
+
+    <ImageView
+        android:id="@+id/riverlane3logB"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/log"
+        tools:layout_editor_absoluteX="250dp"
+        tools:layout_editor_absoluteY="166dp" />
+
+    <ImageView
+        android:id="@+id/riverlane4logA"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/log"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="113dp" />
+
+    <ImageView
+        android:id="@+id/riverlane4logB"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/log"
+        tools:layout_editor_absoluteX="125dp"
+        tools:layout_editor_absoluteY="113dp" />
+
+    <ImageView
+        android:id="@+id/player_character_view"
+        android:layout_width="40dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="628dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_launcher_foreground"
+        tools:ignore="ContentDescription" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
