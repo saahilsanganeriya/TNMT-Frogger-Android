@@ -4,6 +4,10 @@
 
 An exciting Android adaptation of the classic Frogger arcade game featuring beloved Teenage Mutant Ninja Turtles characters. Navigate through traffic-filled roads and treacherous rivers to reach safety while avoiding vehicles and obstacles.
 
+## 🎥 Demo Video
+
+[Watch the game in action!](https://www.youtube.com/shorts/DH13POnPiRk?feature=share) 
+
 ## 🎮 Game Features
 
 - **Character Selection**: Choose from 4 iconic TMNT characters:
