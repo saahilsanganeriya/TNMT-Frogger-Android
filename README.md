@@ -1,91 +1,86 @@
-﻿# TMNT Frogger Android Game 🐢🚗
+# TMNT Frogger for Android
 
-![TMNT Logo](app/src/main/res/drawable/tmnt.jpg)
+A Frogger-style game for Android, written in Java with the plain Android SDK (no game engine). You pick one of the four
+Teenage Mutant Ninja Turtles and cross five lanes of traffic and a river to reach the goal at the top of the screen. It
+was a group project for CS 2340 (Objects and Design) at Georgia Tech in spring 2023.
 
-An exciting Android adaptation of the classic Frogger arcade game featuring beloved Teenage Mutant Ninja Turtles characters. Navigate through traffic-filled roads and treacherous rivers to reach safety while avoiding vehicles and obstacles.
+Demo: [video on YouTube](https://www.youtube.com/shorts/DH13POnPiRk). The repository also holds a demo recording,
+`demo video.mp4`.
 
-## 🎥 Demo Video
+## Who built what
 
-[Watch the game in action!](https://www.youtube.com/shorts/DH13POnPiRk?feature=share) 
+This was coursework by a group of five, built over five sprints. The group's Sprint 1 design document is in the
+repository (`Design Delivearbles S1.docx`: the noun list, conceptual classes, a use-case diagram and a domain model).
+Saahil Sanganeriya uploaded the finished app to GitHub in one commit on 17 September 2023 and maintains this repository.
 
-## 🎮 Game Features
+The tests are the only part with recorded authors: a comment above each of the 40 tests in
+`app/src/androidTest/java/com/example/s0/ExampleInstrumentedTest.java` names who wrote it, and Saahil wrote 8 of them,
+two in each of sprints 2 to 5. The repository does not record who wrote which part of the game code.
 
-- **Character Selection**: Choose from 4 iconic TMNT characters:
-  - ![Raphael](app/src/main/res/drawable/raphael55.png) Raphael
-  - ![Leonardo](app/src/main/res/drawable/leonardo.png) Leonardo  
-  - ![Donatello](app/src/main/res/drawable/donatello.png) Donatello
-  - ![Michelangelo](app/src/main/res/drawable/michelangelo.png) Michelangelo
+## How to play
 
-- **Difficulty Levels**: 
-  - **Easy**: 5 lives
-  - **Medium**: 3 lives  
-  - **Hard**: 1 life
+1. Tap **Start**. On the set-up screen, type a username and tap **ENTER** (it cannot be empty or only spaces), pick a
+   difficulty and a turtle, then tap **PLAY**.
+2. Hold the arrow buttons to move.
+3. A car or truck that touches you costs a life, sends you back to the start and resets your score to 0.
+4. You score 1 point for each step further up the screen than you have been in this life, and 2 points per step in the
+   river.
+5. Reach the goal strip at the top to win. Win or lose, the end screen shows your final score, with **Restart** (back to
+   set-up) and **Exit**.
 
-- **Dynamic Gameplay**: 
-  - 5 lanes of moving vehicles with varying speeds
-  - 4 river lanes with floating logs
-  - Score system with bonus points for water crossing
-  - Touch-based directional controls
+| Difficulty | Lives |
+|---|---:|
+| Easy | 5 |
+| Medium | 3 |
+| Hard | 1 |
 
-## 🚀 Getting Started
+Five road lanes carry 12 vehicles, the lanes moving in alternating directions at three speeds. The river has four lanes
+of moving logs, but it is not a hazard yet: the water and log checks are commented out, so you can walk straight across.
+These values are in `app/src/main/java/com/example/s0/MainActivity.java`: lives at lines 209–221, lanes and speeds at
+lines 32–49 and 257–290, scoring at lines 397–411, the commented-out river checks at lines 309–317 and 533–558.
 
-### Prerequisites
-- Android Studio Arctic Fox or newer
-- Android SDK with minimum API level 27
-- Target SDK 32
+## Build and run
 
-### Installation
-1. Clone this repository
-2. Open the project in Android Studio
-3. Build and run on your Android device or emulator
+The build files pin Android Gradle Plugin 7.4.1 and Gradle 7.5, compile against Android SDK platform 32 (API 32), and
+run on Android 8.1 (API 27) or newer. Gradle needs JDK 11 or newer.
 
-## 🎯 How to Play
+**Android Studio.** Open the folder in Android Studio Electric Eel (2022.1.1) or newer, let Gradle sync, and run the
+`app` configuration on a device or emulator.
 
-![Game Controls](app/src/main/res/drawable/upbutton.png) ![Game Controls](app/src/main/res/drawable/downbutton.png) ![Game Controls](app/src/main/res/drawable/leftbutton.png) ![Game Controls](app/src/main/res/drawable/rightbutton.png)
+**Command line.** The repository has `gradle/wrapper/gradle-wrapper.properties` but not `gradle-wrapper.jar`, so
+`./gradlew` does not run. Use an installed Gradle 7.5:
 
-1. **Setup**: Enter your username, select difficulty, and choose your TMNT character
-2. **Movement**: Use the directional buttons to navigate your character
-3. **Objective**: Cross the road and river safely to reach the goal areas
-4. **Scoring**: Earn points for forward progress, with bonus points in water areas
-5. **Lives**: Avoid vehicles and water hazards - collisions cost you a life!
+```sh
+export ANDROID_HOME=/path/to/android-sdk   # with platforms;android-32 and build-tools;30.0.3 installed
+gradle assembleDebug                       # writes app/build/outputs/apk/debug/app-debug.apk
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
 
-## 🛠️ Technical Highlights
+`gradle assembleDebug` was tested on Linux with JDK 17, Gradle 7.5, SDK platform 32 and build-tools 30.0.3 (October
+2026). The app installs under the launcher name **S0** (its `app_name` string).
 
-- **Pure Android Java**: No external game engines, built with native Android SDK
-- **Custom Animation System**: Smooth sprite movement with timer-based animations
-- **Collision Detection**: Precise boundary checking for vehicles and obstacles
-- **Dynamic Object Management**: Multiple moving vehicles and logs with different speeds
-- **Responsive UI**: Constraint layout design optimized for various screen sizes
+## How it works
 
-## 📱 Screenshots
+- **One activity.** `MainActivity.java` (559 lines) holds all the game logic. It swaps five layouts with
+  `setContentView`: title (`activity_main.xml`), set-up (`configuration.xml`), game (`activity_game_screen.xml`), game
+  over (`game_over.xml`) and win (`game_win.xml`). `Player.java`, `Vehicle.java` and `GamePad.java` are empty classes.
+- **Two timers.** A `java.util.Timer` task every 10 ms moves the turtle 4 pixels while an arrow is held. Every vehicle
+  and log has its own task on a second timer, every 6 ms, that moves it by its lane speed and wraps it to the other side
+  of the screen.
+- **Collisions.** Each vehicle tick checks whether a box around the turtle overlaps a box around that vehicle.
+- **Fixed positions.** Lanes and limits are pixel values in the code (road lanes at y = 1030 to 1600, river lanes at
+  y = 330 to 720, the turtle kept within x = 2 to 970 and y = 180 to 1870), not scaled to the screen.
 
-### Main Menu
-![Safe Area](app/src/main/res/drawable/safe_area.png)
+[TECHNICAL_OVERVIEW.md](TECHNICAL_OVERVIEW.md) goes through the code in more detail.
 
-### Gameplay Elements
-- ![Road](app/src/main/res/drawable/road.png) **Road sections** with moving vehicles
-- ![Water](app/src/main/res/drawable/water.png) **Water areas** with floating logs  
-- ![Goal](app/src/main/res/drawable/goal.png) **Goal areas** to reach safely
+## Third-party artwork
 
-### Vehicles & Obstacles
-![Bus](app/src/main/res/drawable/bus.png) ![Police Car](app/src/main/res/drawable/policecar.png) ![Fire Truck](app/src/main/res/drawable/firetruck.png) ![Construction Truck](app/src/main/res/drawable/constructiontruck.png)
+Teenage Mutant Ninja Turtles, its character names and the turtle images in `app/src/main/res/drawable/` (`tmnt.jpg`,
+`raphael.png`, `raphael55.png`, `leonardo.png`, `donatello.png`, `michelangelo.png`) are trademarks and artwork of their
+owners. This is an unofficial student project, not affiliated with or endorsed by them. The repository does not record
+where the other images (vehicles, road, river, buttons) came from.
 
-## 🏆 Game Mechanics
+## Licence
 
-- **Lives System**: Start with 1-5 lives based on difficulty
-- **Score Progression**: Points awarded for moving forward
-- **Water Bonus**: Double points when crossing water areas
-- **Collision Physics**: Realistic hit detection with vehicle boundaries
-- **Win Condition**: Successfully reach the goal area at the top
-
-## 🔧 Architecture
-
-The game follows a single-activity architecture with multiple layout views:
-- `MainActivity.java`: Core game logic and state management
-- Configuration screen for game setup
-- Game screen with real-time gameplay
-- Win/lose screens with score display
-
----
-
-*A nostalgic tribute to classic arcade gaming with modern Android development practices and TMNT theming.*
+There is no licence file, so default copyright applies: the code is a student group's coursework (see
+[Who built what](#who-built-what)), and the TMNT artwork belongs to its owners.

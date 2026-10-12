@@ -1,377 +1,95 @@
-# TMNT Frogger - Technical Overview 🔧
+# TMNT Frogger: technical notes
 
-![TMNT Characters](app/src/main/res/drawable/tmnt.jpg)
+How the code works. Line numbers refer to `app/src/main/java/com/example/s0/MainActivity.java` (559 lines), which holds
+all the game logic. `Player.java`, `Vehicle.java` and `GamePad.java` are empty classes.
 
-## Project Overview
+## Build set-up
 
-This Android application is a complete recreation of the classic Frogger arcade game, themed with Teenage Mutant Ninja Turtles characters. Built entirely in Java using the Android SDK, it demonstrates advanced mobile game development concepts without relying on external game engines.
+| Setting | Value | Where |
+|---|---|---|
+| Android Gradle Plugin | 7.4.1 | `build.gradle` |
+| Gradle | 7.5 | `gradle/wrapper/gradle-wrapper.properties` (the wrapper JAR is not committed) |
+| compileSdk / targetSdk | 32 | `app/build.gradle` |
+| minSdk | 27 (Android 8.1) | `app/build.gradle` |
+| Java source level | 1.8 | `app/build.gradle` |
+| Libraries | appcompat 1.4.0, material 1.4.0, constraintlayout 2.1.2 | `app/build.gradle` |
 
-## 📋 Technical Specifications
+`app/build.gradle` switches on view binding, but the code looks views up with `findViewById`.
 
-### Development Environment
-- **Language**: Java
-- **Platform**: Android SDK
-- **Minimum API Level**: 27 (Android 8.1)
-- **Target API Level**: 32 (Android 12L)
-- **Build System**: Gradle
-- **IDE**: Android Studio
+## Tests
 
-### Dependencies
-```gradle
-implementation 'androidx.appcompat:appcompat:1.4.0'
-implementation 'com.google.android.material:material:1.4.0'
-implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-```
+`app/src/androidTest/java/com/example/s0/ExampleInstrumentedTest.java` has 40 tests, grouped by sprint (2 to 5): goal
+bounds, vehicle bounds, the water score checks and username checks. A comment above each test names the group member who
+wrote it. Each test mocks `MainActivity` with Mockito and only stubs one of its methods
+(`when(...).thenReturn(...)`); none calls the real method or asserts anything, so they do not check the game code.
+They are instrumented tests: `gradle connectedDebugAndroidTest` runs them on a connected device or emulator.
 
-## 🏗️ Architecture Overview
+## Screens
 
-### Single Activity Architecture
-The application follows a single-activity pattern with multiple layout views managed through `setContentView()`:
-
-```
-MainActivity.java (2000+ lines)
-├── Main Menu (activity_main.xml)
-├── Configuration Screen (configuration.xml)
-├── Game Screen (activity_game_screen.xml)
-├── Game Over Screen (game_over.xml)
-└── Victory Screen (game_win.xml)
-```
-
-### Core Components
-
-#### 1. MainActivity.java
-The central controller containing all game logic:
-
-**Key Constants & Configuration:**
-```java
-// Character Types
-private static final int RAPHAEL = 1;
-private static final int DONATELLO = 2;
-private static final int LEONARDO = 3;
-private static final int MICHELANGELO = 4;
-
-// Difficulty Levels
-private static final int EASY = 1;    // 5 lives
-private static final int MEDIUM = 2;  // 3 lives
-private static final int HARD = 3;    // 1 life
-
-// Lane Configuration
-private static final int Y_LANE1 = 1600;  // Bottom road lane
-private static final int Y_LANE2 = 1480;
-private static final int Y_LANE3 = 1330;
-private static final int Y_LANE4 = 1180;
-private static final int Y_LANE5 = 1030;   // Top road lane
-
-// River Lanes
-private static final int RIVER_Y_LANE1 = 720;
-private static final int RIVER_Y_LANE2 = 590;
-private static final int RIVER_Y_LANE3 = 460;
-private static final int RIVER_Y_LANE4 = 330;
-```
-
-#### 2. Game State Management
-**Game Variables:**
-- `spriteX`, `spriteY`: Player position coordinates
-- `lives`: Current player lives (1-5 based on difficulty)
-- `score`: Current game score
-- `selectedCharacter`: Chosen TMNT character
-- `selectedDifficulty`: Game difficulty level
-
-#### 3. Timer-Based Animation System
-```java
-private Timer timer = new Timer();
-private Timer vehicleTimer = new Timer();
-private Handler handler = new Handler();
-private Handler vehicleHandle = new Handler();
-```
-
-## 🎮 Core Game Systems
-
-### 1. Player Movement System
-**Touch-Based Controls:**
-```java
-@Override
-public boolean onTouch(View view, MotionEvent motionEvent) {
-    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-        switch (view.getId()) {
-            case R.id.upButton: actionUp = true; break;
-            case R.id.downButton: actionDown = true; break;
-            case R.id.leftButton: actionLeft = true; break;
-            case R.id.rightButton: actionRight = true; break;
-        }
-    } else {
-        // Reset all actions on release
-        actionUp = actionDown = actionLeft = actionRight = false;
-    }
-    return true;
-}
-```
-
-**Movement Constraints:**
-- Vertical: Y-axis bounds from 180 to 1870 pixels
-- Horizontal: X-axis bounds from 2 to 970 pixels
-- Movement speed: 4 pixels per frame at 10ms intervals
-
-### 2. Vehicle Management System
-
-**Dynamic Vehicle Creation:**
-```java
-public void moveObject(View view, int id, int speed, int xPos, int yPos, boolean vehicleorlog) {
-    ImageView vehicle = findViewById(id);
-    vehicle.setX(xPos);
-    vehicle.setY(yPos);
-    
-    vehicleTimer.scheduleAtFixedRate(new TimerTask() {
-        @Override
-        public void run() {
-            vehicleHandle.post(() -> {
-                float curTruckX = vehicle.getX();
-                if (curTruckX < 1351 && curTruckX > -501) {
-                    vehicle.setX(curTruckX + speed);
-                    if (vehicleorlog == VEHICLE) {
-                        checkEachVehicle(curTruckX + speed, yPos, id, view);
-                    }
-                } else {
-                    // Reset position for continuous loop
-                    vehicle.setX(speed > 0 ? -500 : 1350);
-                }
-            });
-        }
-    }, 0, 6); // 6ms intervals for smooth movement
-}
-```
-
-**Vehicle Configuration (5 Road Lanes):**
-- **Lane 1**: Cars moving left at speed -1
-- **Lane 2**: Bus, construction truck, pickup truck moving right at speed +1  
-- **Lane 3**: Trash truck, car moving left at speed -2
-- **Lane 4**: Pickup truck, government car moving right at speed +3
-- **Lane 5**: Police cars moving left at speed -3
-
-### 3. Collision Detection System
-
-**Precise Boundary Checking:**
-```java
-public void checkEachVehicle(float carX, float carY, int vehicleID, View view) {
-    // Player boundaries
-    float spriteTopY = spriteY + 27;
-    float spriteBottomY = spriteY - 27;
-    float spriteRightX = spriteX + 20;
-    float spriteLeftX = spriteX - 20;
-
-    // Vehicle boundaries  
-    float vehicleTopY = carY + 20;
-    float vehicleBottomY = carY - 20;
-    float vehicleRightX = carX + 35;
-    float vehicleLeftX = carX - 35;
-
-    if (checkVehicleBounds(spriteLeftX, vehicleRightX, spriteRightX, 
-                          vehicleLeftX, spriteTopY, vehicleBottomY, spriteBottomY)) {
-        loseLife(view);
-    }
-}
-
-public Boolean checkVehicleBounds(float slx, float vrx, float srx, float vlx, 
-                                 float sty, float vby, float sby) {
-    return (slx < vrx && srx > vlx) && (sty > vby && sby < vehicleTopY);
-}
-```
-
-### 4. Scoring System
-
-**Progressive Scoring Logic:**
-```java
-public void incScore(View view, float spriteY) {
-    if (spriteY < maxYAxis) {
-        ImageView water = findViewById(R.id.water);
-        int maxWater = water.getTop();
-        int minWater = water.getBottom();
-        
-        if (checkIfWaterLower(spriteY, minWater) && checkIfWaterUpper(spriteY, maxWater)) {
-            score = score + 2;  // Bonus points in water
-        } else {
-            score++;  // Standard forward progress
-        }
-        maxYAxis = spriteY;
-        scoreText.setText("Score: " + score);
-    }
-}
-```
-
-### 5. Life Management System
-
-**Life Loss Handling:**
-```java
-public void loseLife(View view) {
-    lives--;
-    if (lives <= 0) {
-        // Game Over
-        timer.cancel();
-        vehicleTimer.cancel();
-        setContentView(R.layout.game_over);
-        TextView gameOver = findViewById(R.id.scoreFinalText);
-        gameOver.setText("Final Score: " + score);
-        // Reset game state
-        resetGameState();
-    } else {
-        // Reset position, maintain lives
-        score = 0;
-        maxYAxis = 1870;
-        resetPlayerPosition();
-        updateLivesDisplay();
-    }
-}
-```
-
-## 🎨 Asset Management
-
-### Drawable Resources (32 Assets)
-**Character Sprites:**
-- ![Raphael](app/src/main/res/drawable/raphael55.png) `raphael55.png` (55x55px)
-- ![Leonardo](app/src/main/res/drawable/leonardo.png) `leonardo.png`
-- ![Donatello](app/src/main/res/drawable/donatello.png) `donatello.png` 
-- ![Michelangelo](app/src/main/res/drawable/michelangelo.png) `michelangelo.png`
-
-**Vehicle Assets:**
-- ![Bus](app/src/main/res/drawable/bus.png) `bus.png` - Large public transport
-- ![Police Car](app/src/main/res/drawable/policecar.png) `policecar.png` - Fast police vehicle
-- ![Fire Truck](app/src/main/res/drawable/firetruck.png) `firetruck.png` - Emergency vehicle
-- ![Construction Truck](app/src/main/res/drawable/constructiontruck.png) `constructiontruck.png`
-- Multiple car variants: `cara.png`, `carb.png`, `carc.png`, `card.png`, `care.png`, `carf.png`
-- Pickup trucks: `pickuptrucka.png`, `pickuptruckb.png`
-- Specialty vehicles: `govtcar.png`, `ambulance.png`, `trashtruck.png`
-
-**Environment Assets:**
-- ![Road](app/src/main/res/drawable/road.png) `road.png` - Road texture
-- ![Water](app/src/main/res/drawable/water.png) `water.png` - River sections
-- ![Safe Area](app/src/main/res/drawable/safe_area.png) `safe_area.png` - Safe zones
-- ![Goal](app/src/main/res/drawable/goal.png) `goal.png` - Victory areas
-- ![Log](app/src/main/res/drawable/log.png) `log.png` - Floating platforms
-
-**UI Controls:**
-- ![Up Button](app/src/main/res/drawable/upbutton.png) `upbutton.png`
-- ![Down Button](app/src/main/res/drawable/downbutton.png) `downbutton.png`  
-- ![Left Button](app/src/main/res/drawable/leftbutton.png) `leftbutton.png`
-- ![Right Button](app/src/main/res/drawable/rightbutton.png) `rightbutton.png`
-- ![Heart](app/src/main/res/drawable/heart.png) `heart.png` - Lives indicator
-
-## 🖥️ UI Layout System
-
-### 1. Main Menu (activity_main.xml)
-**Layout Structure:**
-```xml
-<androidx.constraintlayout.widget.ConstraintLayout>
-    <TextView android:text="@string/frogger" android:textSize="48sp" />
-    <ImageView app:srcCompat="@drawable/tmnt" />
-    <Button android:onClick="startConfig" android:text="@string/start" />
-</androidx.constraintlayout.widget.ConstraintLayout>
-```
-
-### 2. Configuration Screen (configuration.xml)
-**User Input Elements:**
-- Username entry with validation
-- Difficulty selection (Easy/Medium/Hard)
-- Character selection with preview images
-- Form validation before game start
-
-### 3. Game Screen (activity_game_screen.xml)
-**Complex Layout (480+ lines):**
-- **HUD Elements**: Player name, score, lives display
-- **Road Layers**: 3 road sections with proper overlap
-- **Water Sections**: 2 water areas with logs
-- **Safe Areas**: 5 safe zone strips
-- **Goal Areas**: 5 goal targets at top
-- **Vehicle Objects**: 15+ dynamic vehicle ImageViews
-- **Log Objects**: 8 floating log platforms
-- **Control Pad**: 4 directional buttons
-- **Player Sprite**: Dynamic character representation
-
-**Coordinate System:**
-- Screen dimensions: ~1080px width × 830px height
-- Y-coordinates: 0 (top) to 1870 (bottom)
-- Lane spacing: ~130px between road lanes
-- Vehicle slot positions: X_SLOT0 (0px) to X_SLOT10 (1200px)
-
-## ⚡ Performance Considerations
-
-### Timer Management
-**Dual Timer System:**
-- **Main Game Timer**: 10ms intervals for player movement
-- **Vehicle Timer**: 6ms intervals for vehicle animation
-- **Proper Cleanup**: Timers cancelled on game state changes
-
-### Memory Management
-**Resource Optimization:**
-- Reuse of Timer objects after cancellation
-- Efficient ImageView recycling for vehicles
-- Minimal object creation in animation loops
-
-### Collision Optimization
-**Selective Checking:**
-- Collision detection only during active gameplay
-- Early exit conditions for game over states
-- Boundary pre-calculations to reduce computation
-
-## 🔄 Game Flow State Machine
+The app has one activity. Each screen is a layout that `MainActivity` loads with `setContentView`, and the layouts call
+its public methods through `android:onClick`.
 
 ```
-[Main Menu] 
-    ↓ (Start Button)
-[Configuration]
-    ↓ (Username + Difficulty + Character)
-[Game Active]
-    ├── [Life Lost] → [Reset Position] → [Continue]
-    ├── [All Lives Lost] → [Game Over Screen]
-    └── [Reach Goal] → [Victory Screen]
-[End Screens]
-    ├── [Exit] → [App Close]
-    └── [Restart] → [Configuration]
+activity_main.xml       title                    Start   -> startConfig()
+        |
+configuration.xml       username, difficulty,    PLAY    -> startGame()  (checks all three are set)
+        |               turtle
+activity_game_screen.xml                                  -> gamePlay()   (starts the timers)
+        |
+        +-- all lives lost ----> game_over.xml   Restart -> startConfig()   Exit -> exitGame()
+        +-- goal reached ------> game_win.xml    Restart -> startConfig()   Exit -> exitGame()
 ```
 
-## 🐛 Known Technical Limitations
+- Set-up (lines 100–193): ENTER rejects an empty or whitespace-only username; PLAY refuses to start until a username,
+  a difficulty and a turtle are chosen, and says which is missing.
+- Lives (lines 209–221): Easy 5, Medium 3, Hard 1.
+- `exitGame` (lines 516–519) calls `finish()` and then `System.exit(0)`.
 
-1. **River Mechanics**: Log collision detection is implemented but commented out
-2. **Water Hazards**: Basic water collision detection present but not fully utilized
-3. **Character Classes**: Empty `Player.java`, `Vehicle.java`, `GamePad.java` classes suggest planned OOP refactoring
-4. **Memory Leaks**: Timer management could be improved with proper lifecycle handling
+## Game loop
 
-## 🔧 Development Best Practices Demonstrated
+Two `java.util.Timer`s drive the game. Their tasks post work to the UI thread through a `Handler`.
 
-### Code Organization
-- **Constants Management**: Centralized game configuration
-- **Method Separation**: Distinct methods for each game system
-- **Event Handling**: Proper touch listener implementation
-- **State Management**: Consistent game state updates
+- **Player** (lines 250–255, 334–366): every 10 ms, `changePos` moves the turtle 4 pixels in each direction whose arrow
+  is held, kept within x = 2 to 970 and y = 180 to 1870. The arrow buttons set the direction flags in `onTouch`
+  (lines 368–395) on press and clear them all on any other touch event, such as a release or a slide.
+- **Vehicles and logs** (lines 294–331): `moveObject` gives every vehicle and log its own task on the second timer,
+  every 6 ms. Each tick moves the view by its lane speed in pixels. A view that leaves the range x = −500 to 1350 jumps
+  back to the far side. For vehicles, the same tick runs the collision check.
 
-### Android Development
-- **Constraint Layouts**: Modern responsive UI design
-- **Resource Management**: Proper drawable and string resources
-- **Activity Lifecycle**: Appropriate use of `onCreate()` and state management
-- **View Binding**: Efficient findViewById usage patterns
+Lanes (constants at lines 32–49, set-up at lines 257–290; a negative speed moves left):
 
-### Game Development
-- **Frame-Rate Management**: Consistent timing with Handler/Timer
-- **Collision Systems**: Precise boundary-based detection
-- **Animation Loops**: Smooth continuous movement
-- **Score Systems**: Progressive difficulty and bonus mechanics
+| Lane | y | Speed (pixels per 6 ms) | Objects |
+|---|---:|---:|---|
+| Road 1 | 1600 | −1 | 2 cars |
+| Road 2 | 1480 | +1 | bus, construction truck, pickup truck |
+| Road 3 | 1330 | −2 | trash truck, car |
+| Road 4 | 1180 | +3 | pickup truck, government car |
+| Road 5 | 1030 | −3 | car, 2 police cars |
+| River 1 | 720 | −1 | 2 logs |
+| River 2 | 590 | +1 | 2 logs |
+| River 3 | 460 | −2 | 2 logs |
+| River 4 | 330 | +3 | 2 logs |
 
-## 📈 Potential Enhancements
+Starting x positions come from eleven slots, 0 to 1200 pixels in steps of 120 (lines 50–60).
 
-### Technical Improvements
-1. **Object-Oriented Refactoring**: Implement Vehicle and Player classes
-2. **Fragment Architecture**: Replace multiple layouts with fragments
-3. **Custom Views**: Create specialized game components
-4. **Sound System**: Add audio feedback and background music
-5. **Database Integration**: High score persistence with Room database
-6. **Multiplayer Support**: Network-based multiplayer functionality
+## Collisions, score and lives
 
-### Game Features
-1. **Power-ups**: Special abilities and temporary invincibility
-2. **Level Progression**: Multiple maps with increasing difficulty
-3. **Achievement System**: Unlock rewards and challenges
-4. **Customization**: Player unlockable skins and themes
-5. **Analytics**: Game telemetry and performance tracking
+- **Vehicles** (lines 457–486): the turtle is a box 40 pixels wide and 54 high around its position; a vehicle is
+  70 × 40. An overlap calls `loseLife`.
+- **Score** (lines 397–411): a step up scores only if it takes the turtle higher than it has been since its last life
+  began; it scores 2 inside the river's rows, 1 elsewhere.
+- **Losing a life** (lines 488–514): the score goes back to 0 and the turtle back to the start. At 0 lives both timers
+  stop and the game-over screen shows the score.
+- **Winning** (lines 441–454, 521–531): once the turtle is more than 100 pixels above the bottom edge of the goal strip,
+  both timers stop and the win screen shows the score.
 
----
+## Known gaps
 
-This technical overview demonstrates a comprehensive understanding of Android game development, showcasing both fundamental mobile app development skills and game programming concepts implemented without external frameworks.
+- **The river is not a hazard.** `checkTouchingWater` (lines 428–439) is never called, and the log check and its call
+  are commented out (lines 309–317, 533–558). Logs move, but the turtle can walk across the water.
+- **Fixed pixel positions.** Lanes, limits and collision boxes are pixel values, not scaled to the screen size.
+- **Timers outlive the screen.** Nothing stops the timers when the activity pauses; they stop only when the game ends.
+- **Unused click handlers.** The arrow buttons in `activity_game_screen.xml` name `onLeftTouch`, `onUpTouch`,
+  `onDownTouch` and `onRightTouch`, which do not exist. They never fire, because `onTouch` consumes every touch.
+- **Unused strings.** `strings.xml` keeps 20 strings that nothing uses, among them a "MyStack App" set and frog
+  colours. The app's launcher name is `S0`.
